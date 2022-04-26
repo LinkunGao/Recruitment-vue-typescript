@@ -218,7 +218,7 @@ export default defineComponent({
       });
     };
     const goRouter = () => {
-      router.push("/index");
+      router.push("/");
     };
     return { ...toRefs(data), goRouter, onSubmit };
   },

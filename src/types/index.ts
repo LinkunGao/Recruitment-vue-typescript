@@ -33,7 +33,7 @@ export interface selectTypeInt {
   welfare: string;
   payArea: string;
   payMonth: string;
-  education: string;
+  workingYear: string;
   // 为了解决ts索引问题
   [key: string]: any;
 }
@@ -59,7 +59,7 @@ export class InitData {
     welfare: "",
     payArea: "",
     payMonth: "",
-    education: "",
+    workingYear: "",
   };
   options: optionTypeInt = {
     WorkingYears: [],

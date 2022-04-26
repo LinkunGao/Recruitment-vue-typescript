@@ -77,7 +77,7 @@ export default defineComponent({
       //   data.jobs[0].jobName
     });
     const selectKey: Array<selectKeyOptionInt> = [
-      { key: "WorkingYears", name: "工作经验", inp: "education" },
+      { key: "WorkingYears", name: "工作经验", inp: "workingYears" },
       { key: "Welfares", name: "福利", inp: "welfare" },
       { key: "PayMonths", name: "薪次", inp: "payMonth" },
       { key: "PayFilter", name: "薪资范围", inp: "payarea" },
@@ -107,8 +107,8 @@ export default defineComponent({
 
     const getJobList = (selected: any): void => {
       getJob(selected).then((res: any) => {
+        console.log(res);
         data.jobs = res.data;
-        console.log(selected);
       });
     };
 
