@@ -11,7 +11,7 @@ enum MSGS {
 
 const $http = axios.create({
   // 可以通过操作基本域名来切换是否使用mock
-  baseURL: "/mock",
+  baseURL: process.env.VUE_APP_BASE_URL,
   timeout: 5000,
   headers: {
     "Content-Type": "application/json;charset=utf-8",
