@@ -8,7 +8,7 @@ export function getJob(data: any): any {
   });
 }
 
-export function postJob(): any {
+export function postJob(data: any): any {
   return $http({
     url: "/Job",
     method: "post",

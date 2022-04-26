@@ -1,7 +1,7 @@
 <template>
   <div class="box">
     <NavBar>
-      <div class="btn">招聘广场</div>
+      <div @click="goRouter" class="btn">发布招聘</div>
     </NavBar>
     <div class="selectBox">
       <div class="searchBox">
@@ -11,8 +11,9 @@
       <div class="listBox">
         <div v-for="i in selectKey" :key="i.key" class="list">
           <span class="label">{{ i.name }}</span>
-          <span class="active">不限</span>
+          <span :class="{ active: !select[i.inp] }">不限</span>
           <span
+            :class="{ active: select[i.inp] === option }"
             @click="getJobList(option, i.inp)"
             v-for="(option, index) in options[getKey(i)]"
             :key="index"
@@ -27,12 +28,13 @@
           <span class="job-name">{{ job.jobName }}</span>
           <span class="pay-num">{{ job.payMin }}K - {{ job.payMax }}K</span>
           <span class="welfare-box">
-            <font
+            <span
+              class="font"
               v-for="(welfare, index) in getWelfare(job.welfare)"
               :key="index"
             >
               {{ welfare }}
-            </font>
+            </span>
           </span>
         </div>
         <div>
@@ -49,28 +51,30 @@
 import { defineComponent, onMounted, reactive, toRefs } from "vue";
 import NavBar from "@/components/NavBar.vue";
 import { getJob, getRequirement } from "../http/job";
-import { selectKeyOptionInt, InitData } from "../types/index";
+import { selectKeyOptionInt, InitData, selectTypeInt } from "../types/index";
+import { useRouter } from "vue-router";
 
 export default defineComponent({
   components: { NavBar },
   //   setup 不支持异步
+  //  在vue3 中setup函数中已经取缔了this
   setup() {
+    const router = useRouter();
+
     const data = reactive(new InitData());
     onMounted(() => {
       getJob({}).then((res: any) => {
         data.jobs = res.data;
-        console.log(res);
       });
       getRequirement().then((res: any) => {
-        console.log(res.data);
         data.options = res.data;
       });
       //   data.jobs[0].jobName
     });
     const selectKey: Array<selectKeyOptionInt> = [
       { key: "WorkingYears", name: "工作经验", inp: "education" },
-      { key: "Welfares", name: "福利", inp: "payarea" },
-      { key: "PayMonths", name: "薪次", inp: "payarea" },
+      { key: "Welfares", name: "福利", inp: "welfare" },
+      { key: "PayMonths", name: "薪次", inp: "payMonth" },
       { key: "PayFilter", name: "薪资范围", inp: "payarea" },
     ];
 
@@ -84,9 +88,32 @@ export default defineComponent({
     };
 
     const getJobList = (str: string, type: string): void => {
-      console.log(str);
+      // 第二种解决ts索引办法,只能解决当前的问题
+      // const new_type: keyof selectTypeInt = type as keyof selectTypeInt;
+      // const new_str: never = str as never;
+
+      // data.select[new_type] = new_str;
+
+      // 第一种，解决长期问题
+      data.select[type] = str;
+      // console.log(data.select);
+      getJob(data.select).then((res: any) => {
+        data.jobs = res.data;
+      });
     };
-    return { ...toRefs(data), selectKey, getKey, getWelfare, getJobList };
+
+    const goRouter = () => {
+      router.push("/release");
+    };
+
+    return {
+      ...toRefs(data),
+      selectKey,
+      getKey,
+      getWelfare,
+      getJobList,
+      goRouter,
+    };
   },
 });
 </script>
@@ -117,6 +144,7 @@ export default defineComponent({
   input {
     border: none;
     outline: none;
+    width: 80%;
   }
   img {
     height: 40px;
@@ -172,7 +200,7 @@ export default defineComponent({
       }
       .welfare-box {
         display: flex;
-        font {
+        .font {
           background: #efefef;
           padding: 0 5px;
           font-size: 13px;
