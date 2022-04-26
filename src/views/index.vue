@@ -6,7 +6,11 @@
     <div class="selectBox">
       <div class="searchBox">
         <input v-model="select.jobName" type="text" placeholder="实习生招聘" />
-        <img src="../assets/search_icon.png" alt="" />
+        <img
+          @click="getJobList(select)"
+          src="../assets/search_icon.png"
+          alt=""
+        />
       </div>
       <div class="listBox">
         <div v-for="i in selectKey" :key="i.key" class="list">
@@ -14,7 +18,7 @@
           <span :class="{ active: !select[i.inp] }">不限</span>
           <span
             :class="{ active: select[i.inp] === option }"
-            @click="getJobList(option, i.inp)"
+            @click="getSelectData(option, i.inp)"
             v-for="(option, index) in options[getKey(i)]"
             :key="index"
             >{{ option }}</span
@@ -63,16 +67,17 @@ export default defineComponent({
 
     const data = reactive(new InitData());
     onMounted(() => {
-      getJob({}).then((res: any) => {
-        data.jobs = res.data;
-      });
+      // getJob({}).then((res: any) => {
+      //   data.jobs = res.data;
+      // });
+      getJobList({});
       getRequirement().then((res: any) => {
         data.options = res.data;
       });
       //   data.jobs[0].jobName
     });
     const selectKey: Array<selectKeyOptionInt> = [
-      { key: "WorkingYears", name: "工作经验", inp: "education" },
+      { key: "WorkingYears", name: "工作经验", inp: "workingYears" },
       { key: "Welfares", name: "福利", inp: "welfare" },
       { key: "PayMonths", name: "薪次", inp: "payMonth" },
       { key: "PayFilter", name: "薪资范围", inp: "payarea" },
@@ -87,7 +92,7 @@ export default defineComponent({
       return str.split(",");
     };
 
-    const getJobList = (str: string, type: string): void => {
+    const getSelectData = (str: string, type: string): void => {
       // 第二种解决ts索引办法,只能解决当前的问题
       // const new_type: keyof selectTypeInt = type as keyof selectTypeInt;
       // const new_str: never = str as never;
@@ -97,7 +102,12 @@ export default defineComponent({
       // 第一种，解决长期问题
       data.select[type] = str;
       // console.log(data.select);
-      getJob(data.select).then((res: any) => {
+      getJobList(data.select);
+    };
+
+    const getJobList = (selected: any): void => {
+      getJob(selected).then((res: any) => {
+        console.log(res);
         data.jobs = res.data;
       });
     };
@@ -113,6 +123,7 @@ export default defineComponent({
       getWelfare,
       getJobList,
       goRouter,
+      getSelectData,
     };
   },
 });
