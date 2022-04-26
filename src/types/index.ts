@@ -28,11 +28,14 @@ export interface selectKeyOptionInt {
   inp: string;
 }
 
-interface selectTypeInt {
+export interface selectTypeInt {
   jobName: string;
+  welfare: string;
   payArea: string;
-  cityId: number;
+  payMonth: string;
   education: string;
+  // 为了解决ts索引问题
+  [key: string]: any;
 }
 // export interface selectTypeInt {
 //   jobName: string;
@@ -53,8 +56,9 @@ export class InitData {
   jobs: Array<jobsTypeInt> = [];
   select: selectTypeInt = {
     jobName: "",
+    welfare: "",
     payArea: "",
-    cityId: 0,
+    payMonth: "",
     education: "",
   };
   options: optionTypeInt = {

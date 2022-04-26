@@ -24,7 +24,7 @@ const Requirement = {
 };
 
 // |5 表示自动生成5条数据
-Mock.mock("/mock/Job", "get", {
+Mock.mock(/\/mock\/Job.*/, "get", {
   "data|5": [
     {
       jobName: "c#/.NET全栈工程师",
@@ -41,5 +41,7 @@ Mock.mock("/mock/Job", "get", {
     },
   ],
 });
+
+Mock.mock("/mock/Job", "post", { code: 200 });
 
 Mock.mock("/mock/Requirement", "get", { data: Requirement });
